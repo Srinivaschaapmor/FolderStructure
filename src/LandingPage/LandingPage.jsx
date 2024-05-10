@@ -30,6 +30,11 @@ function LandingPage({ Json, selectedTab, setSelectedTab, Data }) {
     setAnchorEl(null);
   };
   const location = useLocation();
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  const handleAccordionChange = (index) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
   return (
     <Stack
       direction={"row"}
@@ -57,86 +62,57 @@ function LandingPage({ Json, selectedTab, setSelectedTab, Data }) {
 
         {Object.keys(Data).map((e, index) => (
           <Box key={index}>
-            <Accordion elevation={0}>
+            <Accordion
+              elevation={0}
+              expanded={expandedIndex === index}
+              onChange={() => handleAccordionChange(index)}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`panel${index + 1}-content`}
                 id={`panel${index + 1}-header`}
               >
-                {e}
+                <Typography>{e}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Stack>
-                  {Object.keys(Data[e]).map((e1, i) => {
-                    // console.log(
-                    //   `ans:`,
-                    //   Object.entries(Object.values(Data[e][e1])[0])[0][1]
-                    // )
-                    // console.log(
-                    //   !Object.entries(Object.values(Data[e][e1])[0])[0]?.[1]
-                    //     ? Object.entries(Object.values(Data[e][e1])[0])[0]
-                    //     : Object.entries(Object.values(Data[e][e1])[0])[0][1]
-                    // );
-                    console.log("test-1", Data[e][e1]);
-                    console.log("test-2", Object.values(Data[e][e1]));
-                    console.log("test-3", Object.values(Data[e][e1])[0]);
-                    console.log(
-                      "test-4",
-                      Object.entries(Object.values(Data[e][e1])[0])[0]
-                    );
-                    console.log(
-                      "test-5",
-                      Object.entries(Object.values(Data[e][e1])[0])[0]?.[1]
-                    );
-                    return (
-                      <Link
-                        key={i}
-                        style={{
-                          textDecoration: "none",
-                          color: "black",
+                  {Object.keys(Data[e]).map((e1, i) => (
+                    <Link
+                      key={i}
+                      style={{
+                        textDecoration: "none",
+                        color: "black",
+                      }}
+                      to={
+                        Object.values(Data[e][e1])[0].length > 0
+                          ? `/${e}/${e1}/2023-2024/${
+                              Object.keys(Data[e][e1])[0]
+                            }/${
+                              Object.entries(
+                                Object.values(Data[e][e1])[0]
+                              )[0]?.[1]
+                            }`
+                          : `/${e}/${e1}/2023-2024/${
+                              Object.keys(Data[e][e1])[0]
+                            }/ .`
+                      }
+                    >
+                      <Button
+                        sx={{
+                          backgroundColor: location.pathname.includes(e1)
+                            ? "#BFB6FF"
+                            : null,
+                          color: location.pathname.includes(e1)
+                            ? "white"
+                            : "black",
+                          width: "90%",
+                          ":hover": { backgroundColor: "#E1DDFF" },
                         }}
-                        to={
-                          Object.values(Data[e][e1])[0].length > 0
-                            ? // Object.keys(Data[e][e1])[0]?
-                              `/${e}/${e1}/2023-2024/${
-                                Object.keys(Data[e][e1])[0]
-                              }/${
-                                // Object.values(
-                                //   Object.keys(Object.values(Data[e][e1])[0])
-                                // )[0]
-                                Object.entries(
-                                  Object.values(Data[e][e1])[0]
-                                )[0]?.[1]
-                                //Object.values(Data[e][e1]) --> values of Frontend (object)
-                                //Object.values(Data[e][e1])[0] --> default first link - key of object
-                                //
-                              }`
-                            : `/${e}/${e1}/2023-2024/${
-                                Object.keys(Data[e][e1])[0]
-                              }/ .`
-                          // : `/${e}/${e1}/2023-2024`
-                        }
                       >
-                        <Button
-                          key={i}
-                          sx={{
-                            backgroundColor: location.pathname.includes(e1)
-                              ? "#BFB6FF"
-                              : null,
-                            color: location.pathname.includes(e1)
-                              ? "white"
-                              : "black",
-                            width: "90%",
-                            ":hover": { backgroundColor: "#E1DDFF" },
-                          }}
-                          // onClick={() => setSelectedTab(subTabName)}
-                        >
-                          {/* {Object.keys(Data[e][e1]).map((e2) => e2)} */}
-                          {e1}
-                        </Button>
-                      </Link>
-                    );
-                  })}
+                        {e1}
+                      </Button>
+                    </Link>
+                  ))}
                 </Stack>
               </AccordionDetails>
             </Accordion>
